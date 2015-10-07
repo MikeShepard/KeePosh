@@ -79,6 +79,7 @@ function Get-KPPassword{
     Param([KeePassLib.PwDatabase]$kpDatabase,
           [string]$UserName,
           [string]$Title,
+          [string]$Folder,
           [Parameter(ParameterSetName='AccountEntry')] $Account)
         
     
@@ -100,6 +101,7 @@ function Set-KPPassword{
           [string]$UserName,
           [string]$Title,
           [string]$Password,
+          [string]$Folder,
           [Parameter(ParameterSetName='AccountEntry')] $Account)
         
     
@@ -113,6 +115,6 @@ function Set-KPPassword{
             $IStatusLogger = New-Object KeePassLib.Interfaces.NullStatusLogger
             $kpDatabase.Save($IStatusLogger)
         }
-        else {write-error 'More than one matching row'}
+        else {write-error 'More than one matching entry'}
     }
 }
