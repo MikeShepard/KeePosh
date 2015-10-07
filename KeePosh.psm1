@@ -62,10 +62,15 @@ function Get-KPAccount{
                 $pswd=$pwItem.Strings.ReadSafe('Password') | ConvertTo-SecureString -AsPlainText -Force
                 new-object System.Management.Automation.PSCredential $EntryUserName,$pswd
             } else {
+                $entryURL=$pwItem.Strings.ReadSafe('URL')
+                $entryNotes=$pwItem.Strings.ReadSafe('Notes')
                 $pwItem | 
                     add-member -MemberType NoteProperty -name UserName -Value $EntryUserName -force -PassThru|
                     add-member -MemberType NoteProperty -name Title -Value $EntryTitle -force -PassThru |
-                    add-member -MemberType NoteProperty -name Folder -Value $EntryFolder -force -PassThru 
+                    add-member -MemberType NoteProperty -name Folder -Value $EntryFolder -force -PassThru | 
+                    add-member -MemberType NoteProperty -name URL -Value $EntryURL -force -PassThru | 
+                    add-member -MemberType NoteProperty -name Notes -Value $EntryNotes -force -PassThru 
+                     
 
              }
         }
