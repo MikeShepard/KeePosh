@@ -1,5 +1,4 @@
-﻿
-function Initialize-KeePass{
+﻿function Initialize-KeePass{
 Param(
         [string]$PathToKeePassFolder = 'C:\temp\KeePass-2.28\'
 )
@@ -44,6 +43,7 @@ function Get-KPAccount{
     Param([KeePassLib.PwDatabase]$kpDatabase,
           [string]$UserName,
           [string]$Title,
+          [string]$Folder,
           [Switch]$AsCredential)
     $pwItems = $kpDatabase.RootGroup.GetObjects($true, $true)
     $found=$false
@@ -51,8 +51,10 @@ function Get-KPAccount{
     {
         $EntryUserName=$pwItem.Strings.ReadSafe('UserName')
         $EntryTitle=$pwItem.Strings.ReadSafe('Title')
+        $EntryFolder=$pwItem.ParentGroup.Name
         if ((($EntryUserName -like $UserName) -or !$UserName) -and 
-           ((($EntryTitle -like $Title) -or !$Title)))
+           ((($EntryTitle -like $Title) -or !$Title)) -and
+           ((($EntryFolder -like $Folder) -or !$Folder)))
         {
             $found=$true
             write-verbose 'Item found'
@@ -62,7 +64,9 @@ function Get-KPAccount{
             } else {
                 $pwItem | 
                     add-member -MemberType NoteProperty -name UserName -Value $EntryUserName -force -PassThru|
-                    add-member -MemberType NoteProperty -name Title -Value $EntryTitle -force -PassThru
+                    add-member -MemberType NoteProperty -name Title -Value $EntryTitle -force -PassThru |
+                    add-member -MemberType NoteProperty -name Folder -Value $EntryFolder -force -PassThru 
+
              }
         }
     }
